@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sample</title>
+    <link rel="stylesheet" href="./css/body.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/main.js"></script>
+</head>
+<body>
+    <main>
+        <header>
+            <h1>Poker</h1>
+        </header>
+        <article id="comment">
+            <section id="comment_1">
+                いらないカードを選択または、無選択を押してから「交換・勝負」ボタンを押そう！
+            </section>
+            <section id="comment_2">
+                ルール説明です
+            </section>
+            <section id="comment_3">
+                ルール説明をします
+            </section>
+            <button id="comment_but" onclick="comment_off()">Close</button>
+        </article>
+
+        <article id="start">
+            <section id="rule">
+                <!-- https://www.moroccoboard.com/games/2083 -->
+                <h2>Rule explanation</h2>
+                <!-- <div id="no_pair">
+                    <h3>ノーペア</h3>
+                </div>
+                <div id="one_pair">
+                    <h3>ワンペア</h3>
+                </div>
+                <div id="two_pair">
+                    <h3>ツーペア</h3>
+                </div>
+                <div id="threecards">
+                    <h3>スリーカード</h3>
+                </div>
+                <div id="straight">
+                    <h3>ストレート</h3>
+                </div>
+                <div id="flash">
+                    <h3>フラッシュ</h3>
+                </div>
+                <div id="fullhouse">
+                    <h3>フルハウス</h3>
+                </div>
+                <div id="fourcards">
+                    <h3>フォーカード</h3>
+                </div>
+                <div id="straightflush">
+                    <h3>ストレートフラッシュ</h3>
+                </div>
+                <div id="royalstraightflush">
+                    <h3>ロイヤルストレートフラッシュ</h3>
+                </div> -->
+                <!-- <button id="rule_but_next" onclick="rule_but('next')">Next Page</button>
+                <button id="rule_but_previous" onclick="rule_but('previous')">Previous Page</button> -->
+
+                <div id="main">
+                    <ol>
+                        <li>
+                            まずプレイヤーそれぞれにカードを５枚づつ配ります。
+                        </li>
+                        <li>
+                            役が揃っていない場合や、もっと強い役を狙う場合は、<br>
+                            いらないカードを交換します。　　　　　　　　　　　
+                        </li>
+                        <li>
+                            手札を公開し役の強さを判断して、勝敗が確定します。
+                        </li>
+                        <li>
+                            ５戦行ない、勝利数が多かったプレイヤーの勝利です。
+                        </li>
+                    </ol>
+                </div>
+            </section>
+            <section id="play">
+                <button id="play_but" onclick="play_but()">Start！</button>
+            </section>
+        </article>
+        
+        <article id="game">
+            <section id="game_1">
+                <h2><span id="game_1_comment"></span>戦目</h2>
+                <img id="cards_front" src="./images/cards/backSide_5.jpg"><br>
+                <img id="cards_left" src="./images/cards/backSide_5.jpg">
+                <img id="cards_center" src="./images/cards/backSide.jpg">
+                <img id="cards_right" src="./images/cards/backSide_5.jpg">
+                <div id="gameArea">
+                    <div class="choose" id="cards_1">
+                        <img id="cards_img_1" src="./images/cards/backSide.jpg">
+                        <button class="dealbutton" id="cards_but_1" onclick="chooseCards('1')">捨てる</button>
+                    </div>
+                    <div class="choose" id="cards_2">
+                        <img id="cards_img_2" src="./images/cards/backSide.jpg">
+                        <button class="dealbutton" id="cards_but_2" onclick="chooseCards('2')">捨てる</button>
+                    </div>
+                    <div class="choose" id="cards_3">
+                        <img id="cards_img_3" src="./images/cards/backSide.jpg">
+                        <button class="dealbutton" id="cards_but_3" onclick="chooseCards('3')">捨てる</button>
+                    </div>
+                    <div class="choose" id="cards_4">
+                        <img id="cards_img_4" src="./images/cards/backSide.jpg">
+                        <button class="dealbutton" id="cards_but_4" onclick="chooseCards('4')">捨てる</button>
+                    </div>
+                    <div class="choose" id="cards_5">
+                        <img id="cards_img_5" src="./images/cards/backSide.jpg">
+                        <button class="dealbutton" id="cards_but_5" onclick="chooseCards('5')">捨てる</button>
+                    </div>
+                    <div class="enter_button">
+                        <button onclick="ExchangeButton()">交換・勝負</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="game_2">
+                <h2><span id="game_2_comment"></span>戦目 最終手札</h2>
+                <div id="player_1_cards">
+                    <h2>プレイヤー１</h2>
+                    <img id="player_1_img_1" src="./images/cards/backSide.jpg">
+                    <img id="player_1_img_2" src="./images/cards/backSide.jpg">
+                    <img id="player_1_img_3" src="./images/cards/backSide.jpg">
+                    <img id="player_1_img_4" src="./images/cards/backSide.jpg">
+                    <img id="player_1_img_5" src="./images/cards/backSide.jpg">
+                    <h3 id="player_1_comment">ロイヤルストレートフラッシュ</h3>
+                </div>
+                <div id="player_2_cards">
+                    <h2>プレイヤー２</h2>
+                    <img id="player_2_img_1" src="./images/cards/backSide.jpg">
+                    <img id="player_2_img_2" src="./images/cards/backSide.jpg">
+                    <img id="player_2_img_3" src="./images/cards/backSide.jpg">
+                    <img id="player_2_img_4" src="./images/cards/backSide.jpg">
+                    <img id="player_2_img_5" src="./images/cards/backSide.jpg">
+                    <h3 id="player_1_comment">ワンペア</h3>
+                </div>
+                <div id="player_3_cards">
+                    <h2>プレイヤー３</h2>
+                    <img id="player_3_img_1" src="./images/cards/backSide.jpg">
+                    <img id="player_3_img_2" src="./images/cards/backSide.jpg">
+                    <img id="player_3_img_3" src="./images/cards/backSide.jpg">
+                    <img id="player_3_img_4" src="./images/cards/backSide.jpg">
+                    <img id="player_3_img_5" src="./images/cards/backSide.jpg">
+                    <h3 id="player_1_comment">フルハウス</h3>
+                </div>
+                <div id="player_4_cards">
+                    <h2>プレイヤー４</h2>
+                    <img id="player_4_img_1" src="./images/cards/backSide.jpg">
+                    <img id="player_4_img_2" src="./images/cards/backSide.jpg">
+                    <img id="player_4_img_3" src="./images/cards/backSide.jpg">
+                    <img id="player_4_img_4" src="./images/cards/backSide.jpg">
+                    <img id="player_4_img_5" src="./images/cards/backSide.jpg">
+                    <h3 id="player_1_comment">フォーカード</h3>
+                </div>
+                <button onclick="ResultDisplay()">結果表示へ</button>
+            </section>
+
+            <section id="game_3">
+                <h2><span id="game_3_comment"></span>戦目 結果発表</h2>
+                <div id="rank_1">
+                    <span id="rank_1_place"></span>位　<span id="rank_1_name"></span>
+                </div>
+                <div id="rank_2">
+                    <span id="rank_2_place"></span>位　<span id="rank_2_name"></span>
+                </div>
+                <div id="rank_3">
+                    <span id="rank_3_place"></span>位　<span id="rank_3_name"></span>
+                </div>
+                <div id="rank_4">
+                    <span id="rank_4_place"></span>位　<span id="rank_4_name"></span>
+                </div>
+                <button onclick="NextGame()">次へ</button>
+            </section>
+
+        </article>
+
+        <article id="end">
+            <h2>結果発表</h2>
+            <section>
+                <table id="all_result_table">
+                    <tr>
+                        <th></th><th>１戦目</th><th>２戦目</th><th>３戦目</th><th>４戦目</th><th>５戦目</th>
+                    </tr>
+                    <tr id="all_result_1">
+                        <th>player_1</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    </tr>
+                    <tr id="all_result_2">
+                        <th>player_2</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    </tr>
+                    <tr id="all_result_3">
+                        <th>player_3</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    </tr>
+                    <tr id="all_result_4">
+                        <th>player_4</th><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td>
+                    </tr>
+                </table>
+            </section>
+            
+            <section>
+                <div id="final_result_1">
+                    <span id="final_result_1_place"></span>位　<span id="final_result_1_name"></span>
+                </div>
+                <div id="final_result_2">
+                    <span id="final_result_2_place"></span>位　<span id="final_result_2_name"></span>
+                </div>
+                <div id="final_result_3">
+                    <span id="final_result_3_place"></span>位　<span id="final_result_3_name"></span>
+                </div>
+                <div id="final_result_4">
+                    <span id="final_result_4_place"></span>位　<span id="final_result_4_name"></span>
+                </div>
+            </section>
+
+            <section>
+                <button onclick="GameReset()">Return to Start</button>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
