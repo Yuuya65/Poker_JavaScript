@@ -7,6 +7,7 @@
  *  Modified -3- version
  *******************************************************************/
 
+// オブジェクトインスタンスを作成
 let card = new CreateDeck();
 let player_1 = new CreatePlayer(1, "first player");
 let player_2 = new CreatePlayer(2, "secound player");
@@ -26,9 +27,10 @@ function CreateDeck() {
     this.gameResult = PrepareCardsFrame();
     this.allCards = PrepareCardsFrame();
     this.CreateCards = function(allCards, gameNumber) {
-        let markName = "";
+        let markName = "";      // マークの名前
         for(let j = 0 ; j < 4 ; j ++) {
-            let k = j * 13;
+            let k = j * 13;     // allCardsの要素番号
+            // カードのマークを設定
             if(j === 0) {
                 markName = "spade";
             } else if(j === 2) {
@@ -38,9 +40,10 @@ function CreateDeck() {
             } else {
                 markName = "heart";
             }
+            // カードの数字を設定
             for(let i = 1 ; i <= 13 ; i ++) {
-                let value = i;
-                if (value === 1) {
+                let value = i;      // 数字の価値 (強い順に値を大きくする)
+                if (value === 1) {  // pokerの「1」は「King」より強いため、valueに14を設定
                     value = 14;
                 }
                 allCards[gameNumber][k] = {name: `${markName}_${i}`, mark: markName, value: value};
@@ -64,6 +67,9 @@ function CreatePlayer(playerNum, playerName) {
     this.playerHand = [];
     this.playerResult = PrepareCardsFrame();
 }
+/**
+ * 5戦分の配列を作る
+ */
 function PrepareCardsFrame() {
     let array = [];
     for(let i = 0 ; i < 5 ; i ++) {
@@ -71,6 +77,7 @@ function PrepareCardsFrame() {
     }
     return array;
 }
+
 
 // start play player_but
 function play_but() {
@@ -112,21 +119,20 @@ function game_start() {
  * @param {*} player_num 
  */
 function dealDeck(card, player_num) {
-    let gameNumber = card.gameNumber;
-    ShuffleCards(card.allCards, gameNumber);
-    for(let i = 0 ; i < 5 ; i++) {
+    let gameNumber = card.gameNumber;           // 戦数を取得
+    ShuffleCards(card.allCards, gameNumber);    // 手札を配布する前に山札をシャッフル
+    for(let i = 0 ; i < 5 ; i++) {              // 5枚ずつ配る
         player_num.playerCards[gameNumber][i] = card.allCards[gameNumber][0];
-        card.allCards[gameNumber].splice(0, 1);
+        card.allCards[gameNumber].splice(0, 1); // 配ったカードは山札から消す
     }
 
-    // display
+    // HTMLにて表示を行う
     if(player_num.playerNum === 1) {
         //displayUpdate(gameNumber, player_num);
         for(let i = 0 ; i < 5 ; i++ ) {
             let cards_img_num = document.getElementById("cards_img_" + (i + 1));
     
             cards_img_num.src = `./images/cards/${player_num.playerCards[gameNumber][i].mark}_${player_num.playerCards[gameNumber][i].value}.png`;
-            //console.log(`./images/cards/${player_num.playerCards[gameNumber][i].mark}_${player_num.playerCards[gameNumber][i].value}.png`);
         }
     }
 }
@@ -137,11 +143,11 @@ function dealDeck(card, player_num) {
  * @returns 
  */
 function ShuffleCards(allCards, gameNumber) {
-    let len = allCards[gameNumber].length;
+    let len = allCards[gameNumber].length;  // 山札の残り枚数を取得
     let temp,
         i;
-
-    while(len--) {
+    // シャッフルの処理
+    while(len--) {      // 残り枚数が0になると同時にwhile文から抜け出す。[0 = false]
         i = Math.floor(Math.random() * len);
         temp = allCards[gameNumber][len];
         allCards[gameNumber][len] = allCards[gameNumber][i];
@@ -194,6 +200,23 @@ function ExchangeButton() {
 }
 
 /**
+ * カードの交換 (player1)
+ */
+function Exchange(card, player_num, exchangeCards) {
+    let gameNumber = card.gameNumber;
+    ShuffleCards(card.allCards[gameNumber], gameNumber);
+
+    for(i in exchangeCards) {
+        if(exchangeCards[i] === true) {
+            player_num.playerCards[gameNumber][i] = card.allCards[gameNumber][0];
+            card.allCards[gameNumber].splice(0, 1);
+        }
+    }
+    
+    Judgment(player_num);
+    displayUpdate(gameNumber, player_num);
+}
+/**
  * カード交換 (player_2~4)
  */
 function Exchangethers(card, player_num) {
@@ -218,24 +241,6 @@ function Exchangethers(card, player_num) {
         // sameNumber == true --> card change
         Exchange(card, player_num, sameNumber);
     }
-    /* console.log(sameNumber); */
-}
-/**
- * カードの交換
- */
-function Exchange(card, player_num, exchangeCards) {
-    let gameNumber = card.gameNumber;
-    ShuffleCards(card.allCards[gameNumber], gameNumber);
-
-    for(i in exchangeCards) {
-        if(exchangeCards[i] === true) {
-            player_num.playerCards[gameNumber][i] = card.allCards[gameNumber][0];
-            card.allCards[gameNumber].splice(0, 1);
-        }
-    }
-    
-    Judgment(player_num);
-    displayUpdate(gameNumber, player_num);
 }
 /**
  * Display on html-cards_img_num
@@ -289,23 +294,22 @@ function displayUpdate(gameNumber, player_num) {
  * 役の判定
  */
 function Judgment(player_num) {
-    //Aggregation of numbers
-    let AggregatioNumers = {
+    let gameNumber = card.gameNumber;   // 戦数を取得
+    let AggregatioNumers = {            // 手札の数字を集約
         2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0 
     };
-    let AggregationMark = {
+    let AggregationMark = {             // 手札のマークを集約
         "spade": 0, "club": 0, "diamond": 0, "heart": 0,
     }
-    let gameNumber = card.gameNumber;
 
     for(n in player_num.playerCards[gameNumber]) {
-        //Judgment numbers
+        // 数字を集計する
         for(let i = 2 ; i <= 14 ; i ++) {
             if(i === player_num.playerCards[gameNumber][n].value) {
                 AggregatioNumers[i] += 1;
             }
         }
-        //Judgment mark
+        // マークを集計する
         if("spade" === player_num.playerCards[gameNumber][n].mark) {
             AggregationMark.spade += 1;
         } else if("club" === player_num.playerCards[gameNumber][n].mark) {
@@ -320,12 +324,12 @@ function Judgment(player_num) {
 
 }
 function JudgmentHand(gameNumber, player_num, AggregatioNumers, AggregationMark) {
-    let handPoint = [0];
-    let handTotalPoint = 0;
+    let handPoint = [0];    // 役を格納
+    let handTotalPoint = 0; // 最終的な役を格納
     //Find the pair
     for(let i = 2 ; i <= 14 ; i ++) {
-        if(AggregatioNumers[i] === 2) {
-            if(handPoint.length === 2) {
+        if(AggregatioNumers[i] == 2) {
+            if(handPoint.length == 2) {    // 二つ目のペアを見つければツーペア
                 handPoint.push(i + 50);
             } else {
                 handPoint.push(i);
@@ -334,8 +338,8 @@ function JudgmentHand(gameNumber, player_num, AggregatioNumers, AggregationMark)
     }
     //Find the three pair or full house
     for(let i = 2 ; i <= 14 ; i ++) {
-        if(AggregatioNumers[i] === 3) {
-            if(handPoint.length === 2) {
+        if(AggregatioNumers[i] == 3) {     // 3枚のカードで同じ数字ならスリーカード
+            if(handPoint.length == 2) {    // ペアを見つけていたらフルハウス
                 handPoint.push(i + 250);
             } else {
                 handPoint.push(i + 100);
@@ -344,26 +348,26 @@ function JudgmentHand(gameNumber, player_num, AggregatioNumers, AggregationMark)
     }
     //Find the four cards
     for(let i = 2 ; i <= 14 ; i ++) {
-        if(AggregatioNumers[i] === 4) {
+        if(AggregatioNumers[i] == 4) {
             handPoint.push(i + 300);
         }
     }
-    //Find the straight
+    //Find the straight (数字が順番になっている ex: 2,3,4,5,6) を見つける
     for(let i = 2 ; i <= 10 ; i ++) {
-        if(AggregatioNumers[i] === 1) {
-            if(AggregatioNumers[i + 1] === 1 && AggregatioNumers[i + 2] === 1 && AggregatioNumers[i + 3] === 1 && AggregatioNumers[i + 4] === 1) {
+        if(AggregatioNumers[i] == 1) {
+            if(AggregatioNumers[i + 1] == 1 && AggregatioNumers[i + 2] == 1 && AggregatioNumers[i + 3] == 1 && AggregatioNumers[i + 4] == 1) {
                 handPoint.push(i + 4 + 150);
             }else {
                 break;
             }
         }
     }
-    //Find the flash
+    //Find the flash (マークが一緒) を見つける
     for(n in AggregationMark) {
-        if(AggregationMark[n] === 5) {
+        if(AggregationMark[n] == 5) {
             let maxNumvers = 0;
             for(let i = 14 ; i >= 2 ; i --) {
-                if(AggregatioNumers[i] === 1) {
+                if(AggregatioNumers[i] == 1) {
                     maxNumvers = i;
                     break;
                 }
@@ -371,7 +375,7 @@ function JudgmentHand(gameNumber, player_num, AggregatioNumers, AggregationMark)
             handPoint.push(maxNumvers + 200);
         }
     }
-    for(n in handPoint) {
+    for(n in handPoint) {       // 最終的な役を格納
         handTotalPoint += handPoint[n];
     }
     player_num.playerHand[gameNumber] = handTotalPoint;
@@ -567,55 +571,6 @@ function FinalResult() {
         }
         rank = rank + j;
     }
-
-    /* let aggregation_hand = {"player_1": 0, "player_2": 0, "player_3": 0, "player_4": 0};
-    aggregation_hand.player_1 = player_1.playerResult.reduce((sum, element) => sum + element, 0);
-    aggregation_hand.player_2 = player_2.playerResult.reduce((sum, element) => sum + element, 0);
-    aggregation_hand.player_3 = player_3.playerResult.reduce((sum, element) => sum + element, 0);
-    aggregation_hand.player_4 = player_4.playerResult.reduce((sum, element) => sum + element, 0);
-
-    let x = -4;
-    for(let i = 0 ; i < 4 ; i ++) {
-        let max = 0;
-        for(n in aggregation_hand) {
-            if(max <= aggregation_hand[n]) {
-                max = aggregation_hand[n];
-            }
-        }
-        for(n in aggregation_hand) {
-            if(max === aggregation_hand[n]) {
-                aggregation_hand[n] = (x + i);
-            }
-        }
-    }
-    //console.log(aggregation);
-
-    rank = 1;
-    for(let i = -1 ; i >= -4 ; i --) {
-        let j = 0;
-        for(n in aggregation_hand) {
-            if(i === aggregation_hand[n]) {
-                let final_result_num = document.getElementById("final_result_hand_" + (rank + j));
-                final_result_num.childNodes[1].innerHTML = rank;
-                final_result_num.childNodes[3].innerHTML = n;
-                if(rank === 1) {
-                    final_result_num.childNodes[1].style.color = "gold";
-                    final_result_num.childNodes[3].style.color = "gold";
-                } else if(rank === 2) {
-                    final_result_num.childNodes[1].style.color = "silver";
-                    final_result_num.childNodes[3].style.color = "silver";
-                } else if(rank === 3) {
-                    final_result_num.childNodes[1].style.color = "#815a2b";
-                    final_result_num.childNodes[3].style.color = "#815a2b";
-                } else {
-                    final_result_num.childNodes[1].style.color = "blueviolet";
-                    final_result_num.childNodes[3].style.color = "blueviolet";
-                }
-                j ++;
-            }
-        }
-        rank = rank + j;
-    } */
 }
 /**
  * 各ゲームの順位を表示する
@@ -630,8 +585,6 @@ function ReflectionTable(player_num, num) {
         j ++;
     }
 }
-
-
 
 /**
  * htnl
@@ -654,37 +607,3 @@ function comment_off() {
     let comment = document.getElementById("comment");
     comment.style.display = "none";
 }
-
-
-/***************************************************************
- * workbench
- ***************************************************************/
-function button2() {
-    let comment = document.getElementById("comment");
-    let children = comment.childNodes;
-
-    console.log(children);
-
-    children[1].style.display = "none";
-}
-
-function ViewplayerCards() {
-    console.log("player_1");
-    console.log(player_1.playerCards[card.gameNumber]);
-    console.log("player_2");
-    console.log(player_2.playerCards[card.gameNumber]);
-    console.log("player_3");
-    console.log(player_3.playerCards[card.gameNumber]);
-    console.log("player_4");
-    console.log(player_4.playerCards[card.gameNumber]);
-    console.log("playerHand")
-    console.log("player_1");
-    console.log(player_1.playerHand[card.gameNumber]);
-    console.log("player_2");
-    console.log(player_2.playerHand[card.gameNumber]);
-    console.log("player_3");
-    console.log(player_3.playerHand[card.gameNumber]);
-    console.log("player_4");
-    console.log(player_4.playerHand[card.gameNumber]);
-}
-
